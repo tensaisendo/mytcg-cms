@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "colors",
+  "info": {
+    "singularName": "color",
+    "pluralName": "colors",
+    "displayName": "Color"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "hex": {
+      "type": "string"
+    },
+    "cards": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::card.card",
+      "inversedBy": "colors"
+    }
+  }
+}

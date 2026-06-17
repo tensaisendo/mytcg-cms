@@ -1,0 +1,77 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cards",
+  "info": {
+    "singularName": "card",
+    "pluralName": "cards",
+    "displayName": "Card"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cardId": {
+      "type": "string",
+      "unique": true
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "life": {
+      "type": "integer"
+    },
+    "power": {
+      "type": "string"
+    },
+    "counter": {
+      "type": "string"
+    },
+    "effect": {
+      "type": "richtext"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "colors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::color.color",
+      "mappedBy": "cards"
+    },
+    "features": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::feature.feature",
+      "mappedBy": "cards"
+    },
+    "types": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::type.type",
+      "mappedBy": "cards"
+    },
+    "set": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::set.set",
+      "inversedBy": "cards"
+    },
+    "rarity": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::rarity.rarity",
+      "inversedBy": "cards"
+    }
+  }
+}
