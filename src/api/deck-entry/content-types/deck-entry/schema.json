@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "deck_entries",
+  "info": {
+    "singularName": "deck-entry",
+    "pluralName": "deck-entries",
+    "displayName": "Deck Entry"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {},
+  "attributes": {
+    "deck": { "type": "relation", "relation": "manyToOne", "target": "api::deck.deck", "inversedBy": "entries", "required": true },
+    "card": { "type": "relation", "relation": "manyToOne", "target": "api::card.card", "required": true },
+    "displayCode": { "type": "string", "required": true },
+    "quantity": { "type": "integer", "required": true, "min": 1, "max": 4 }
+  }
+}

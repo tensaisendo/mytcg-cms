@@ -509,6 +509,40 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAttributeAttribute extends Struct.CollectionTypeSchema {
+  collectionName: 'attributes';
+  info: {
+    displayName: 'Attribute';
+    pluralName: 'attributes';
+    singularName: 'attribute';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::attribute.attribute'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   collectionName: 'authors';
   info: {
@@ -541,6 +575,110 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCardPrintingCardPrinting
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'card_printings';
+  info: {
+    displayName: 'Card Printing';
+    pluralName: 'card-printings';
+    singularName: 'card-printing';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cardId: Schema.Attribute.String & Schema.Attribute.Required;
+    cardTraderBlueprintId: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    displayCode: Schema.Attribute.String;
+    effect: Schema.Attribute.RichText;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    language: Schema.Attribute.Enumeration<['FR', 'EN', 'JP']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'FR'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::card-printing.card-printing'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    price: Schema.Attribute.Decimal;
+    priceCurrency: Schema.Attribute.Enumeration<['EUR']> &
+      Schema.Attribute.DefaultTo<'EUR'>;
+    priceMethod: Schema.Attribute.Enumeration<['median_lowest_listings']>;
+    priceSampleSize: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    priceScope: Schema.Attribute.Enumeration<['FR', 'EU']>;
+    priceSource: Schema.Attribute.Enumeration<['CardTrader']>;
+    priceUpdatedAt: Schema.Attribute.DateTime;
+    printingId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    set: Schema.Attribute.Relation<'manyToOne', 'api::set.set'>;
+    slug: Schema.Attribute.UID<'printingId'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    variant: Schema.Attribute.String;
+  };
+}
+
+export interface ApiCardRestrictionCardRestriction
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'card_restrictions';
+  info: {
+    displayName: 'Card Restriction';
+    pluralName: 'card-restrictions';
+    singularName: 'card-restriction';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    displayCode: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::card-restriction.card-restriction'
+    > &
+      Schema.Attribute.Private;
+    maxCopies: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 4;
+          min: 0;
+        },
+        number
+      >;
+    pairedDisplayCode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    regulation: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::deck-regulation.deck-regulation'
+    > &
+      Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<
+      ['banned', 'restricted', 'banned_pair']
+    > &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCardCard extends Struct.CollectionTypeSchema {
   collectionName: 'cards';
   info: {
@@ -552,12 +690,21 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    cardId: Schema.Attribute.String & Schema.Attribute.Unique;
+    attributes: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::attribute.attribute'
+    >;
+    cardId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    cardTraderBlueprintId: Schema.Attribute.String;
     colors: Schema.Attribute.Relation<'manyToMany', 'api::color.color'>;
-    counter: Schema.Attribute.String;
+    cost: Schema.Attribute.Integer;
+    counter: Schema.Attribute.Integer;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    displayCode: Schema.Attribute.String;
     effect: Schema.Attribute.RichText;
     features: Schema.Attribute.Relation<'manyToMany', 'api::feature.feature'>;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
@@ -565,16 +712,35 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::card.card'> &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String;
-    power: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    power: Schema.Attribute.Integer;
     price: Schema.Attribute.Decimal;
+    priceCurrency: Schema.Attribute.Enumeration<['EUR']> &
+      Schema.Attribute.DefaultTo<'EUR'>;
+    priceMethod: Schema.Attribute.Enumeration<['median_lowest_listings']>;
+    priceSampleSize: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    priceScope: Schema.Attribute.Enumeration<['FR', 'EU']>;
+    priceSource: Schema.Attribute.Enumeration<['CardTrader']>;
+    priceUpdatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     rarity: Schema.Attribute.Relation<'manyToOne', 'api::rarity.rarity'>;
     set: Schema.Attribute.Relation<'manyToOne', 'api::set.set'>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    treatment: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::treatment.treatment'
+    >;
     types: Schema.Attribute.Relation<'manyToMany', 'api::type.type'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variant: Schema.Attribute.String;
   };
 }
 
@@ -618,18 +784,149 @@ export interface ApiColorColor extends Struct.CollectionTypeSchema {
     singularName: 'color';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    cards: Schema.Attribute.Relation<'manyToMany', 'api::card.card'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     hex: Schema.Attribute.String;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::color.color'> &
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDeckEntryDeckEntry extends Struct.CollectionTypeSchema {
+  collectionName: 'deck_entries';
+  info: {
+    displayName: 'Deck Entry';
+    pluralName: 'deck-entries';
+    singularName: 'deck-entry';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    card: Schema.Attribute.Relation<'manyToOne', 'api::card.card'> &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deck: Schema.Attribute.Relation<'manyToOne', 'api::deck.deck'> &
+      Schema.Attribute.Required;
+    displayCode: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deck-entry.deck-entry'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    quantity: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 4;
+          min: 1;
+        },
+        number
+      >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDeckRegulationDeckRegulation
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'deck_regulations';
+  info: {
+    displayName: 'Deck Regulation';
+    pluralName: 'deck-regulations';
+    singularName: 'deck-regulation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    active: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    effectiveFrom: Schema.Attribute.Date & Schema.Attribute.Required;
+    format: Schema.Attribute.Enumeration<['standard']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'standard'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deck-regulation.deck-regulation'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    notes: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    restrictions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::card-restriction.card-restriction'
+    >;
+    sourceUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDeckDeck extends Struct.CollectionTypeSchema {
+  collectionName: 'decks';
+  info: {
+    displayName: 'Deck';
+    pluralName: 'decks';
+    singularName: 'deck';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    entries: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deck-entry.deck-entry'
+    >;
+    format: Schema.Attribute.Enumeration<['standard']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'standard'>;
+    leader: Schema.Attribute.Relation<'manyToOne', 'api::card.card'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::deck.deck'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    owner: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -645,13 +942,17 @@ export interface ApiFeatureFeature extends Struct.CollectionTypeSchema {
     singularName: 'feature';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    cards: Schema.Attribute.Relation<'manyToMany', 'api::card.card'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -660,6 +961,7 @@ export interface ApiFeatureFeature extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -706,13 +1008,17 @@ export interface ApiRarityRarity extends Struct.CollectionTypeSchema {
     singularName: 'rarity';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    cards: Schema.Attribute.Relation<'oneToMany', 'api::card.card'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -722,6 +1028,7 @@ export interface ApiRarityRarity extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String;
     order: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -736,19 +1043,60 @@ export interface ApiSetSet extends Struct.CollectionTypeSchema {
     singularName: 'set';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    cards: Schema.Attribute.Relation<'oneToMany', 'api::card.card'>;
     code: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::set.set'> &
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    releaseDate: Schema.Attribute.Date;
+    slug: Schema.Attribute.UID<'name'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTreatmentTreatment extends Struct.CollectionTypeSchema {
+  collectionName: 'treatments';
+  info: {
+    displayName: 'Treatment';
+    pluralName: 'treatments';
+    singularName: 'treatment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::treatment.treatment'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -763,21 +1111,88 @@ export interface ApiTypeType extends Struct.CollectionTypeSchema {
     singularName: 'type';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    cards: Schema.Attribute.Relation<'manyToMany', 'api::card.card'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    labelFr: Schema.Attribute.String;
+    labelJp: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::type.type'> &
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUserCardUserCard extends Struct.CollectionTypeSchema {
+  collectionName: 'user_cards';
+  info: {
+    description: 'Collection and wishlist quantities for one user and one card printing';
+    displayName: 'User Card';
+    pluralName: 'user-cards';
+    singularName: 'user-card';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    entryKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-card.user-card'
+    > &
+      Schema.Attribute.Private;
+    ownedQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 999;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    owner: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
+    printing: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::card-printing.card-printing'
+    > &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    wantedQuantity: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 999;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1294,15 +1709,23 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
       'api::article.article': ApiArticleArticle;
+      'api::attribute.attribute': ApiAttributeAttribute;
       'api::author.author': ApiAuthorAuthor;
+      'api::card-printing.card-printing': ApiCardPrintingCardPrinting;
+      'api::card-restriction.card-restriction': ApiCardRestrictionCardRestriction;
       'api::card.card': ApiCardCard;
       'api::category.category': ApiCategoryCategory;
       'api::color.color': ApiColorColor;
+      'api::deck-entry.deck-entry': ApiDeckEntryDeckEntry;
+      'api::deck-regulation.deck-regulation': ApiDeckRegulationDeckRegulation;
+      'api::deck.deck': ApiDeckDeck;
       'api::feature.feature': ApiFeatureFeature;
       'api::global.global': ApiGlobalGlobal;
       'api::rarity.rarity': ApiRarityRarity;
       'api::set.set': ApiSetSet;
+      'api::treatment.treatment': ApiTreatmentTreatment;
       'api::type.type': ApiTypeType;
+      'api::user-card.user-card': ApiUserCardUserCard;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "rarities",
+  "collectionName": "treatments",
   "info": {
-    "singularName": "rarity",
-    "pluralName": "rarities",
-    "displayName": "Rarity"
+    "singularName": "treatment",
+    "pluralName": "treatments",
+    "displayName": "Treatment"
   },
   "options": {
     "draftAndPublish": false
@@ -12,7 +12,8 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "labelFr": {
       "type": "string"
@@ -22,10 +23,8 @@
     },
     "slug": {
       "type": "uid",
-      "targetField": "name"
-    },
-    "order": {
-      "type": "integer"
+      "targetField": "name",
+      "required": true
     },
     "key": {
       "type": "string",

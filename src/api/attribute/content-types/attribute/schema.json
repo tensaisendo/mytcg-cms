@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "rarities",
+  "collectionName": "attributes",
   "info": {
-    "singularName": "rarity",
-    "pluralName": "rarities",
-    "displayName": "Rarity"
+    "singularName": "attribute",
+    "pluralName": "attributes",
+    "displayName": "Attribute"
   },
   "options": {
     "draftAndPublish": false
@@ -23,9 +23,6 @@
     "slug": {
       "type": "uid",
       "targetField": "name"
-    },
-    "order": {
-      "type": "integer"
     },
     "key": {
       "type": "string",

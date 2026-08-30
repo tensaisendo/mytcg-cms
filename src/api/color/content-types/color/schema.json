@@ -7,21 +7,31 @@
     "displayName": "Color"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string"
     },
+    "labelFr": {
+      "type": "string"
+    },
+    "labelJp": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
     "hex": {
       "type": "string"
     },
-    "cards": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::card.card",
-      "inversedBy": "colors"
+    "key": {
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }

@@ -1,0 +1,105 @@
+{
+  "kind": "collectionType",
+  "collectionName": "card_printings",
+  "info": {
+    "singularName": "card-printing",
+    "pluralName": "card-printings",
+    "displayName": "Card Printing"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "printingId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": [
+        "FR",
+        "EN",
+        "JP"
+      ],
+      "required": true,
+      "default": "FR"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "cardId": {
+      "type": "string",
+      "required": true
+    },
+    "displayCode": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "printingId"
+    },
+    "effect": {
+      "type": "richtext"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "priceCurrency": {
+      "type": "enumeration",
+      "enum": [
+        "EUR"
+      ],
+      "default": "EUR"
+    },
+    "priceSource": {
+      "type": "enumeration",
+      "enum": [
+        "CardTrader"
+      ]
+    },
+    "priceUpdatedAt": {
+      "type": "datetime"
+    },
+    "priceSampleSize": {
+      "type": "integer",
+      "min": 0
+    },
+    "priceScope": {
+      "type": "enumeration",
+      "enum": [
+        "FR",
+        "EU"
+      ]
+    },
+    "priceMethod": {
+      "type": "enumeration",
+      "enum": [
+        "median_lowest_listings"
+      ]
+    },
+    "cardTraderBlueprintId": {
+      "type": "string"
+    },
+    "set": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::set.set"
+    }
+  }
+}

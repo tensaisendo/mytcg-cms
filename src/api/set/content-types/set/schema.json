@@ -7,21 +7,43 @@
     "displayName": "Set"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string"
     },
+    "labelFr": {
+      "type": "string"
+    },
+    "labelJp": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
     "code": {
       "type": "string"
     },
-    "cards": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::card.card",
-      "mappedBy": "set"
+    "releaseDate": {
+      "type": "date"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "key": {
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }

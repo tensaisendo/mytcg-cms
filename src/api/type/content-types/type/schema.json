@@ -7,18 +7,27 @@
     "displayName": "Type"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string"
     },
-    "cards": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::card.card",
-      "inversedBy": "types"
+    "labelFr": {
+      "type": "string"
+    },
+    "labelJp": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "key": {
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }

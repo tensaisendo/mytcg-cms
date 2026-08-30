@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "deck_regulations",
+  "info": {
+    "singularName": "deck-regulation",
+    "pluralName": "deck-regulations",
+    "displayName": "Deck Regulation"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "format": { "type": "enumeration", "enum": ["standard"], "default": "standard", "required": true },
+    "effectiveFrom": { "type": "date", "required": true },
+    "sourceUrl": { "type": "string", "required": true },
+    "active": { "type": "boolean", "default": false, "required": true },
+    "notes": { "type": "text" },
+    "restrictions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::card-restriction.card-restriction",
+      "mappedBy": "regulation"
+    }
+  }
+}

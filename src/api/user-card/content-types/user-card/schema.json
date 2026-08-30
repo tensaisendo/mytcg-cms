@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_cards",
+  "info": {
+    "singularName": "user-card",
+    "pluralName": "user-cards",
+    "displayName": "User Card",
+    "description": "Collection and wishlist quantities for one user and one card printing"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "entryKey": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "private": true
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "printing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::card-printing.card-printing",
+      "required": true
+    },
+    "ownedQuantity": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "max": 999
+    },
+    "wantedQuantity": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "max": 999
+    }
+  }
+}

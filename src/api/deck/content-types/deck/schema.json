@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "decks",
+  "info": {
+    "singularName": "deck",
+    "pluralName": "decks",
+    "displayName": "Deck"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true, "maxLength": 80 },
+    "format": { "type": "enumeration", "enum": ["standard"], "default": "standard", "required": true },
+    "owner": { "type": "relation", "relation": "manyToOne", "target": "plugin::users-permissions.user", "required": true },
+    "leader": { "type": "relation", "relation": "manyToOne", "target": "api::card.card", "required": true },
+    "entries": { "type": "relation", "relation": "oneToMany", "target": "api::deck-entry.deck-entry", "mappedBy": "deck" }
+  }
+}

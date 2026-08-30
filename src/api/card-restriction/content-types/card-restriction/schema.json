@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "card_restrictions",
+  "info": {
+    "singularName": "card-restriction",
+    "pluralName": "card-restrictions",
+    "displayName": "Card Restriction"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {},
+  "attributes": {
+    "regulation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::deck-regulation.deck-regulation",
+      "inversedBy": "restrictions",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["banned", "restricted", "banned_pair"],
+      "required": true
+    },
+    "displayCode": { "type": "string", "required": true },
+    "pairedDisplayCode": { "type": "string" },
+    "maxCopies": { "type": "integer", "min": 0, "max": 4 }
+  }
+}

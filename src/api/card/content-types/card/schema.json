@@ -12,23 +12,75 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
     },
     "cardId": {
       "type": "string",
+      "required": true,
       "unique": true
+    },
+    "displayCode": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string"
     },
     "price": {
       "type": "decimal"
     },
-    "life": {
+    "priceCurrency": {
+      "type": "enumeration",
+      "enum": [
+        "EUR"
+      ],
+      "default": "EUR"
+    },
+    "priceSource": {
+      "type": "enumeration",
+      "enum": [
+        "CardTrader"
+      ]
+    },
+    "priceUpdatedAt": {
+      "type": "datetime"
+    },
+    "priceSampleSize": {
+      "type": "integer",
+      "min": 0
+    },
+    "priceScope": {
+      "type": "enumeration",
+      "enum": [
+        "FR",
+        "EU"
+      ]
+    },
+    "priceMethod": {
+      "type": "enumeration",
+      "enum": [
+        "median_lowest_listings"
+      ]
+    },
+    "cardTraderBlueprintId": {
+      "type": "string"
+    },
+    "cost": {
       "type": "integer"
     },
     "power": {
-      "type": "string"
+      "type": "integer"
+    },
+    "life": {
+      "type": "integer"
     },
     "counter": {
-      "type": "string"
+      "type": "integer"
     },
     "effect": {
       "type": "richtext"
@@ -43,35 +95,40 @@
         "audios"
       ]
     },
+    "attributes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::attribute.attribute"
+    },
     "colors": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::color.color",
-      "mappedBy": "cards"
+      "target": "api::color.color"
     },
     "features": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::feature.feature",
-      "mappedBy": "cards"
+      "target": "api::feature.feature"
     },
     "types": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::type.type",
-      "mappedBy": "cards"
-    },
-    "set": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::set.set",
-      "inversedBy": "cards"
+      "target": "api::type.type"
     },
     "rarity": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::rarity.rarity",
-      "inversedBy": "cards"
+      "target": "api::rarity.rarity"
+    },
+    "treatment": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::treatment.treatment"
+    },
+    "set": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::set.set"
     }
   }
 }
