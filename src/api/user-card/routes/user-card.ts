@@ -2,6 +2,12 @@ export default {
   routes: [
     {
       method: 'GET',
+      path: '/user-cards/catalog',
+      handler: 'user-card.catalog',
+      config: { policies: [], middlewares: [] },
+    },
+    {
+      method: 'GET',
       path: '/user-cards/me',
       handler: 'user-card.mine',
       config: {

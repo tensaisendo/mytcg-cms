@@ -587,13 +587,20 @@ export interface ApiCardPrintingCardPrinting
     draftAndPublish: true;
   };
   attributes: {
+    acquisition: Schema.Attribute.String;
+    card: Schema.Attribute.Relation<'manyToOne', 'api::card.card'>;
     cardId: Schema.Attribute.String & Schema.Attribute.Required;
     cardTraderBlueprintId: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     displayCode: Schema.Attribute.String;
+    distribution: Schema.Attribute.String;
+    distributionRegion: Schema.Attribute.String;
+    distributionSourceUrl: Schema.Attribute.String;
+    distributionVerifiedAt: Schema.Attribute.DateTime;
     effect: Schema.Attribute.RichText;
+    event: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     language: Schema.Attribute.Enumeration<['FR', 'EN', 'JP']> &
       Schema.Attribute.Required &
@@ -606,9 +613,28 @@ export interface ApiCardPrintingCardPrinting
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     price: Schema.Attribute.Decimal;
+    priceCondition: Schema.Attribute.Enumeration<
+      [
+        'Ungraded',
+        'Near Mint',
+        'Excellent',
+        'Good',
+        'Light Played',
+        'Played',
+        'Poor',
+        'Graded',
+      ]
+    >;
     priceCurrency: Schema.Attribute.Enumeration<['EUR']> &
       Schema.Attribute.DefaultTo<'EUR'>;
-    priceMethod: Schema.Attribute.Enumeration<['median_lowest_listings']>;
+    priceMethod: Schema.Attribute.Enumeration<
+      [
+        'median_lowest_listings',
+        'cardmarket_trend',
+        'median_market_listings',
+        'median_sold_listings',
+      ]
+    >;
     priceSampleSize: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
@@ -617,7 +643,10 @@ export interface ApiCardPrintingCardPrinting
         number
       >;
     priceScope: Schema.Attribute.Enumeration<['FR', 'EU']>;
-    priceSource: Schema.Attribute.Enumeration<['CardTrader']>;
+    priceSource: Schema.Attribute.Enumeration<
+      ['CardTrader', 'Cardmarket', 'eBay']
+    >;
+    priceSourceUrl: Schema.Attribute.String;
     priceUpdatedAt: Schema.Attribute.DateTime;
     printingId: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -625,6 +654,10 @@ export interface ApiCardPrintingCardPrinting
     publishedAt: Schema.Attribute.DateTime;
     set: Schema.Attribute.Relation<'manyToOne', 'api::set.set'>;
     slug: Schema.Attribute.UID<'printingId'>;
+    treatment: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::treatment.treatment'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -690,6 +723,7 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    acquisition: Schema.Attribute.String;
     attributes: Schema.Attribute.Relation<
       'manyToMany',
       'api::attribute.attribute'
@@ -705,7 +739,12 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     displayCode: Schema.Attribute.String;
+    distribution: Schema.Attribute.String;
+    distributionRegion: Schema.Attribute.String;
+    distributionSourceUrl: Schema.Attribute.String;
+    distributionVerifiedAt: Schema.Attribute.DateTime;
     effect: Schema.Attribute.RichText;
+    event: Schema.Attribute.String;
     features: Schema.Attribute.Relation<'manyToMany', 'api::feature.feature'>;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     life: Schema.Attribute.Integer;
@@ -715,9 +754,28 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String & Schema.Attribute.Required;
     power: Schema.Attribute.Integer;
     price: Schema.Attribute.Decimal;
+    priceCondition: Schema.Attribute.Enumeration<
+      [
+        'Ungraded',
+        'Near Mint',
+        'Excellent',
+        'Good',
+        'Light Played',
+        'Played',
+        'Poor',
+        'Graded',
+      ]
+    >;
     priceCurrency: Schema.Attribute.Enumeration<['EUR']> &
       Schema.Attribute.DefaultTo<'EUR'>;
-    priceMethod: Schema.Attribute.Enumeration<['median_lowest_listings']>;
+    priceMethod: Schema.Attribute.Enumeration<
+      [
+        'median_lowest_listings',
+        'cardmarket_trend',
+        'median_market_listings',
+        'median_sold_listings',
+      ]
+    >;
     priceSampleSize: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
@@ -726,7 +784,10 @@ export interface ApiCardCard extends Struct.CollectionTypeSchema {
         number
       >;
     priceScope: Schema.Attribute.Enumeration<['FR', 'EU']>;
-    priceSource: Schema.Attribute.Enumeration<['CardTrader']>;
+    priceSource: Schema.Attribute.Enumeration<
+      ['CardTrader', 'Cardmarket', 'eBay']
+    >;
+    priceSourceUrl: Schema.Attribute.String;
     priceUpdatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     rarity: Schema.Attribute.Relation<'manyToOne', 'api::rarity.rarity'>;
@@ -1051,14 +1112,17 @@ export interface ApiSetSet extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    isLegacy: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     key: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     labelFr: Schema.Attribute.String;
     labelJp: Schema.Attribute.String;
+    language: Schema.Attribute.Enumeration<['EN', 'FR', 'JP']>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::set.set'> &
       Schema.Attribute.Private;
+    mediaFolderId: Schema.Attribute.Integer & Schema.Attribute.Unique;
     name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     releaseDate: Schema.Attribute.Date;
@@ -1193,6 +1257,51 @@ export interface ApiUserCardUserCard extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface ApiUserProfileUserProfile extends Struct.CollectionTypeSchema {
+  collectionName: 'user_profiles';
+  info: {
+    displayName: 'User Profile';
+    pluralName: 'user-profiles';
+    singularName: 'user-profile';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    avatar: Schema.Attribute.Media<'images'>;
+    avatarData: Schema.Attribute.Text & Schema.Attribute.Private;
+    berries: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    lastDailyReward: Schema.Attribute.Date & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-profile.user-profile'
+    > &
+      Schema.Attribute.Private;
+    owner: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    rewardKeys: Schema.Attribute.JSON & Schema.Attribute.Private;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1726,6 +1835,7 @@ declare module '@strapi/strapi' {
       'api::treatment.treatment': ApiTreatmentTreatment;
       'api::type.type': ApiTypeType;
       'api::user-card.user-card': ApiUserCardUserCard;
+      'api::user-profile.user-profile': ApiUserProfileUserProfile;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

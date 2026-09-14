@@ -1,3 +1,5 @@
+import { awardOnce } from '../../../lib/berries';
+
 const DECK_UID = 'api::deck.deck';
 const ENTRY_UID = 'api::deck-entry.deck-entry';
 const CARD_UID = 'api::card.card';
@@ -175,7 +177,8 @@ export default {
     const deck = await strapi.db.query(DECK_UID).create({
       data: { name, format: 'standard', owner: ctx.state.user.id, leader: leader.id },
     });
-    ctx.body = { data: serializeDeck(await findOwnedDeck(deck.documentId, ctx.state.user.id), await getActiveRegulation()) };
+    const profile = await awardOnce(strapi, ctx.state.user.id, `deck:${deck.documentId}`, 500);
+    ctx.body = { data: serializeDeck(await findOwnedDeck(deck.documentId, ctx.state.user.id), await getActiveRegulation()), meta: { berries: Number(profile.berries || 0) } };
   },
 
   async update(ctx: any) {

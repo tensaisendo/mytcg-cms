@@ -11,6 +11,18 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "language": {
+      "type": "enumeration",
+      "enum": ["EN", "FR", "JP"]
+    },
+    "mediaFolderId": {
+      "type": "integer",
+      "unique": true
+    },
+    "isLegacy": {
+      "type": "boolean",
+      "default": false
+    },
     "name": {
       "type": "string"
     },

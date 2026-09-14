@@ -2,6 +2,91 @@
 
 ## MYTCG HUB deck regulations
 
+Pour lancer CMS et Hub ensemble sous Windows, double-cliquer sur
+`../start-local.cmd`. Voir le [guide local](../README.md).
+
+### Localized product Sets
+
+Simulation du rattrapage : `npm run cards:plan-recovery`. Regenere l'audit medias
+et produit `.tmp/reports/card-recovery-plan.md` et `.json`. Lecture seule ;
+`--write` est refuse. Les candidats necessitent encore une validation officielle.
+Les identifiants existants, produits ambigus et suffixes non pris en charge sont
+isoles, sans toucher aux prix ni aux collections.
+
+Les candidates automatiques localisees ont ete traitees : 204 impressions FR
+et 212 JP creees et verifiees. Pour de futurs medias, regenerer d'abord le plan
+ici, puis lancer depuis `mytcg-hub` :
+
+```powershell
+npm run recover:localized-batch -- --language FR --limit 50
+npm run recover:localized-batch -- --language FR --limit 50 --write
+npm run recover:localized-batch -- --language JP --limit 50
+npm run recover:localized-batch -- --language JP --limit 50 --write
+```
+
+Le premier appel simule. Le second sauvegarde la base, ignore les impressions
+existantes, ecrit seulement les propositions validees et verifie le resultat.
+
+Verification des noms FR officiels : `npm run sets:audit-names-fr` (Python 3,
+acces Internet). Puis `npm run sets:apply-names-fr` pour simuler et
+`npm run sets:apply-names-fr -- --write` pour appliquer uniquement les noms.
+Strapi doit tourner ; le token est lu depuis `../mytcg-hub/.env.local`.
+Les journaux avant/apres sont conserves dans `.tmp/reports`.
+Les produits generiques sans code officiel restent inchanges. La migration des
+Sets preserve desormais les noms existants lors d'une nouvelle execution.
+
+Audit en lecture seule des dossiers, images sans fiche et relations :
+`npm run sets:audit-coverage`. Rapports `.tmp/reports/set-coverage.md` et `.json`.
+Strapi peut rester lance. Les noms de fichiers identiques ne prouvent pas un
+visuel identique ; aucune correction automatique n'est effectuee.
+
+Each Set is a language-specific Media Library product folder, with `key`
+(`OP09:FR`), `language`, `mediaFolderId` and a code-free local `name`.
+Old shared Sets are retained with `isLegacy=true`. Their deprecated translation
+fields are cleared; active Sets never inherit names from another language.
+`GET /api/sets/summary?language=FR` lists only FR editions, including empty ones.
+
+`npm run sets:migrate-editions` audits local SQLite. Start Strapi once to sync
+the schema, stop it, then run `npm run sets:migrate-editions -- --write`.
+The script backs up the DB, relinks by attached media, and verifies unchanged
+card, price, media and collection data. Reports and unresolved links are in
+`.tmp/reports`; backups in `.tmp/backups`. Restart with `npm run develop`.
+Run regression tests with `npm run test:set-editions`.
+
+### Card and language printings
+
+`Card` stores the shared game identity and rules. Each `CardPrinting` is the
+actual collectible in EN, FR or JP and owns its printed code, image, localized
+text, price, Set and treatment. `CardPrinting.card` is the explicit link between
+both records; matching filename suffixes are not treated as proof that artwork
+or treatment is identical across languages.
+
+For an existing database, start Strapi once after the schema change, stop it,
+then audit and apply the backed-up migration:
+
+```bash
+npm run printings:migrate-card-treatment
+npm run printings:migrate-card-treatment -- --write
+```
+
+The Media Library importer fills these relations for future printings and does
+not overwrite a treatment already curated in Strapi.
+
+### Collection API
+
+`GET /api/user-cards/catalog?lang=JP&page=1` requires an authenticated user.
+It filters owned printings by account and language, then applies `query`,
+`set`, `rarity`, `treatment`, `color`, `type` and `sort` before pagination.
+Only the 12 selected cards have their media populated. Metadata queries are
+restricted to owned card codes and chunked to limit SQL parameters.
+Restart Strapi to register the route and authenticated-role permission.
+
+Regression tests (mock database, no real data modified):
+
+```bash
+node --test tests/collection-catalog.test.cjs
+```
+
 The active One Piece deck regulation and its card restrictions are managed in
 the Strapi Content Manager through `Deck Regulation` and `Card Restriction`.
 

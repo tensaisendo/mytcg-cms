@@ -93,12 +93,17 @@ export default {
 
     for (const action of [
       'api::user-card.user-card.mine',
+      'api::user-card.user-card.catalog',
       'api::user-card.user-card.upsert',
       'api::deck.deck.mine',
       'api::deck.deck.findOne',
       'api::deck.deck.create',
       'api::deck.deck.update',
       'api::deck.deck.remove',
+      'api::user-profile.user-profile.me',
+      'api::user-profile.user-profile.updateMe',
+      'api::user-profile.user-profile.checkIn',
+      'plugin::upload.content-api.upload',
     ]) {
       const existing = await strapi.db.query('plugin::users-permissions.permission').findOne({
         where: { action, role: role.id },

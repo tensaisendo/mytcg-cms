@@ -96,6 +96,8 @@ logs
 results
 node_modules
 .node_history
+__pycache__/
+*.py[cod]
 
 ############################
 # Package managers

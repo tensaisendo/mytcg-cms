@@ -40,6 +40,24 @@
     "variant": {
       "type": "string"
     },
+    "distribution": {
+      "type": "string"
+    },
+    "acquisition": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "distributionRegion": {
+      "type": "string"
+    },
+    "distributionSourceUrl": {
+      "type": "string"
+    },
+    "distributionVerifiedAt": {
+      "type": "datetime"
+    },
     "slug": {
       "type": "uid",
       "targetField": "printingId"
@@ -70,7 +88,9 @@
     "priceSource": {
       "type": "enumeration",
       "enum": [
-        "CardTrader"
+        "CardTrader",
+        "Cardmarket",
+        "eBay"
       ]
     },
     "priceUpdatedAt": {
@@ -90,8 +110,27 @@
     "priceMethod": {
       "type": "enumeration",
       "enum": [
-        "median_lowest_listings"
+        "median_lowest_listings",
+        "cardmarket_trend",
+        "median_market_listings",
+        "median_sold_listings"
       ]
+    },
+    "priceCondition": {
+      "type": "enumeration",
+      "enum": [
+        "Ungraded",
+        "Near Mint",
+        "Excellent",
+        "Good",
+        "Light Played",
+        "Played",
+        "Poor",
+        "Graded"
+      ]
+    },
+    "priceSourceUrl": {
+      "type": "string"
     },
     "cardTraderBlueprintId": {
       "type": "string"
@@ -100,6 +139,16 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::set.set"
+    },
+    "card": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::card.card"
+    },
+    "treatment": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::treatment.treatment"
     }
   }
 }
